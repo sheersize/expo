@@ -2,6 +2,781 @@
 title: Start developing
 description: Make your first change to an Expo project and see it live on your device.
 hideTOC: true
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide Daily — Sports & Wellness Tips</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f7f3ec;
+    --dark: #1a1710;
+    --green: #2d6a4f;
+    --green-light: #40916c;
+    --green-pale: #d8f3dc;
+    --amber: #e8a020;
+    --rust: #c0392b;
+    --mid: #7a7060;
+    --line: rgba(26,23,16,0.1);
+    --line-dark: rgba(26,23,16,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--dark);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; opacity: 0.4;
+  }
+
+  * { position: relative; z-index: 1; }
+
+  /* ── NAV ── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 4rem;
+    border-bottom: 1px solid var(--line);
+    background: rgba(247,243,236,0.9);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.1rem; font-weight: 500; letter-spacing: 0.15em;
+    color: var(--dark);
+  }
+  .logo em { color: var(--green); font-style: normal; }
+  .nav-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--mid); border: 1px solid var(--line);
+    padding: 0.35rem 0.8rem; border-radius: 20px;
+  }
+  .nav-cta {
+    background: var(--green); color: var(--cream);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.1em;
+    text-transform: uppercase; text-decoration: none;
+    padding: 0.6rem 1.4rem; border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--green-light); }
+
+  /* ── HERO ── */
+  .hero {
+    display: grid; grid-template-columns: 1fr 420px;
+    gap: 0; min-height: 88vh;
+    align-items: stretch;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-left {
+    padding: 6rem 4rem;
+    border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .day-counter {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--green); margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5.5vw, 5.5rem);
+    line-height: 1.05; font-weight: 700;
+    margin-bottom: 1.5rem; letter-spacing: -0.01em;
+  }
+  h1 em {
+    font-style: italic; color: var(--green);
+    font-weight: 400;
+  }
+  .hero-desc {
+    font-size: 1rem; line-height: 1.75;
+    color: var(--mid); max-width: 46ch; margin-bottom: 3rem;
+  }
+  .hero-stats {
+    display: flex; gap: 3rem;
+    border-top: 1px solid var(--line);
+    padding-top: 2rem;
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem; color: var(--dark); line-height: 1;
+  }
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--mid);
+    margin-top: 0.3rem;
+  }
+
+  /* ── TODAY'S TIP PREVIEW ── */
+  .hero-right {
+    background: var(--dark); padding: 3rem 2.5rem;
+    display: flex; flex-direction: column; justify-content: center;
+    overflow: hidden;
+  }
+  .tip-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--green-light); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .tip-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+  .tip-category {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    background: rgba(64,145,108,0.2); color: var(--green-light);
+    border: 1px solid rgba(64,145,108,0.3);
+    padding: 0.25rem 0.6rem; border-radius: 2px; margin-bottom: 1rem;
+  }
+  .tip-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; line-height: 1.55;
+    color: rgba(247,243,236,0.9); margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+  .tip-detail {
+    font-size: 0.82rem; line-height: 1.7;
+    color: rgba(247,243,236,0.45); margin-bottom: 2rem;
+  }
+  .tip-nav {
+    display: flex; gap: 0.5rem;
+  }
+  .tip-btn {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(247,243,236,0.6); padding: 0.5rem 1rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.1em; cursor: pointer;
+    transition: all 0.2s; border-radius: 2px;
+  }
+  .tip-btn:hover, .tip-btn.active {
+    background: var(--green); border-color: var(--green);
+    color: var(--cream);
+  }
+  .tip-counter {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; color: rgba(247,243,236,0.25);
+    margin-top: 2rem; letter-spacing: 0.1em;
+  }
+
+  /* ── SECTION BASICS ── */
+  section { padding: 6rem 4rem; }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--green); margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 700; line-height: 1.1; margin-bottom: 1rem;
+  }
+  .section-sub {
+    color: var(--mid); font-size: 0.95rem;
+    line-height: 1.75; max-width: 52ch;
+  }
+
+  /* ── TIP CATEGORIES ── */
+  #categories { background: #f0ebe1; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .cat-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 0; margin-top: 3rem;
+    border: 1px solid var(--line);
+  }
+  .cat-card {
+    padding: 2rem 1.5rem;
+    border-right: 1px solid var(--line);
+    transition: background 0.2s;
+  }
+  .cat-card:last-child { border-right: none; }
+  .cat-card:hover { background: rgba(45,106,79,0.05); }
+  .cat-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+  .cat-card h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 0.5rem; color: var(--dark);
+  }
+  .cat-card p { font-size: 0.78rem; color: var(--mid); line-height: 1.6; }
+  .cat-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; color: var(--green);
+    margin-top: 0.8rem; letter-spacing: 0.1em;
+  }
+
+  /* ── SAMPLE TIPS ── */
+  #samples { background: var(--cream); }
+  .tips-header { margin-bottom: 3rem; }
+  .tips-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .sample-tip {
+    background: var(--cream); padding: 2rem;
+    transition: background 0.2s;
+  }
+  .sample-tip:hover { background: #f0ebe1; }
+  .tip-day {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--mid); margin-bottom: 0.5rem;
+  }
+  .tip-cat-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.2rem 0.5rem; border-radius: 2px; margin-bottom: 0.8rem;
+  }
+  .tag-vb { background: rgba(45,106,79,0.1); color: var(--green); }
+  .tag-wellness { background: rgba(232,160,32,0.12); color: #b07a10; }
+  .tag-mental { background: rgba(192,57,43,0.1); color: var(--rust); }
+  .tag-nutrition { background: rgba(45,106,79,0.08); color: var(--green-light); }
+  .tag-recovery { background: rgba(232,160,32,0.08); color: #8a6010; }
+  .sample-tip h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-style: italic; margin-bottom: 0.6rem;
+    line-height: 1.4;
+  }
+  .sample-tip p { font-size: 0.78rem; color: var(--mid); line-height: 1.65; }
+
+  /* ── TIERS ── */
+  #tiers { background: var(--dark); }
+  #tiers .section-title { color: var(--cream); }
+  #tiers .section-label { color: var(--green-light); }
+  #tiers .section-sub { color: rgba(247,243,236,0.4); }
+  .tiers-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; margin-top: 3.5rem;
+  }
+  .tier-card {
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 3px; padding: 2.5rem;
+    background: rgba(255,255,255,0.03);
+    position: relative; overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .tier-card:hover { border-color: rgba(64,145,108,0.4); }
+  .tier-card.featured {
+    border-color: var(--green);
+    background: rgba(45,106,79,0.08);
+  }
+  .tier-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute; top: 0; right: 0;
+    background: var(--green); color: var(--cream);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.2em;
+    padding: 0.4rem 0.8rem;
+  }
+  .tier-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--green-light); margin-bottom: 0.5rem;
+  }
+  .tier-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--cream);
+    margin-bottom: 0.3rem;
+  }
+  .tier-desc { font-size: 0.78rem; color: rgba(247,243,236,0.35); margin-bottom: 1.5rem; }
+  .tier-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem; color: var(--cream); line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .tier-price sup { font-size: 1.5rem; vertical-align: top; margin-top: 0.6rem; }
+  .tier-period { font-size: 0.75rem; color: rgba(247,243,236,0.3); margin-bottom: 2rem; font-family: 'IBM Plex Mono', monospace; }
+  .tier-features { list-style: none; margin-bottom: 2rem; }
+  .tier-features li {
+    font-size: 0.82rem; padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(247,243,236,0.6);
+    display: flex; align-items: flex-start; gap: 0.8rem;
+  }
+  .tier-features li::before { content: '→'; color: var(--green-light); flex-shrink: 0; font-size: 0.75rem; margin-top: 0.1rem; }
+  .tier-btn {
+    display: block; text-align: center; text-decoration: none;
+    padding: 0.9rem; font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 2px; transition: all 0.2s;
+  }
+  .tier-btn-outline {
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(247,243,236,0.6);
+  }
+  .tier-btn-outline:hover {
+    border-color: var(--green); color: var(--green-light);
+  }
+  .tier-btn-filled {
+    background: var(--green); color: var(--cream);
+    border: 1px solid var(--green);
+  }
+  .tier-btn-filled:hover { background: var(--green-light); }
+
+  /* ── GUMROAD SETUP GUIDE ── */
+  #setup { background: #f0ebe1; border-top: 1px solid var(--line); }
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; margin-top: 3rem;
+    border: 1px solid var(--line);
+  }
+  .step {
+    padding: 2.5rem 2rem;
+    border-right: 1px solid var(--line);
+  }
+  .step:last-child { border-right: none; }
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem; color: var(--green-pale);
+    line-height: 1; margin-bottom: 1rem;
+    -webkit-text-stroke: 1px var(--green);
+    color: transparent;
+  }
+  .step h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 0.6rem; color: var(--dark);
+  }
+  .step p { font-size: 0.8rem; color: var(--mid); line-height: 1.65; }
+  .step-tag {
+    display: inline-block; margin-top: 0.8rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+    background: rgba(45,106,79,0.1); color: var(--green);
+    padding: 0.25rem 0.6rem; border-radius: 2px;
+  }
+
+  /* ── REVENUE CALC ── */
+  #revenue { background: var(--cream); }
+  .rev-table {
+    margin-top: 3rem; border: 1px solid var(--line);
+    border-collapse: collapse; width: 100%;
+  }
+  .rev-table th {
+    background: var(--dark); color: var(--cream);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 1rem 1.5rem; text-align: left;
+    font-weight: 400;
+  }
+  .rev-table td {
+    padding: 1.1rem 1.5rem; font-size: 0.85rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--dark);
+  }
+  .rev-table tr:last-child td { border-bottom: none; }
+  .rev-table tr:hover td { background: #f0ebe1; }
+  .mono { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; }
+  .highlight-row td { background: rgba(45,106,79,0.05); font-weight: 500; }
+  .green-text { color: var(--green); font-weight: 500; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark); padding: 3rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1rem; font-weight: 500; letter-spacing: 0.15em;
+    color: rgba(247,243,236,0.4);
+  }
+  .footer-logo em { color: var(--green-light); font-style: normal; }
+  footer p { font-size: 0.75rem; color: rgba(247,243,236,0.2); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-left > * { animation: fadeUp 0.6s ease both; }
+  .hero-left > *:nth-child(1) { animation-delay: 0.05s; }
+  .hero-left > *:nth-child(2) { animation-delay: 0.15s; }
+  .hero-left > *:nth-child(3) { animation-delay: 0.25s; }
+  .hero-left > *:nth-child(4) { animation-delay: 0.35s; }
+  .hero-right { animation: fadeUp 0.8s ease 0.4s both; }
+
+  @media (max-width: 960px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-tag { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 5rem 1.5rem 3rem; border-right: none; border-bottom: 1px solid var(--line); }
+    .hero-right { padding: 2rem 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .tips-grid { grid-template-columns: 1fr; }
+    .tiers-grid { grid-template-columns: 1fr; }
+    .steps-grid { grid-template-columns: repeat(2, 1fr); }
+    .steps-grid .step:nth-child(2) { border-right: none; }
+    footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">SLIDE <em>DAILY</em></div>
+  <div class="nav-tag">Sports & Wellness · Est. 2026</div>
+  <a href="#tiers" class="nav-cta">Subscribe</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="day-counter"><span class="dot"></span> Live Subscription · 3 Tiers Available</div>
+    <h1>One tip.<br><em>Every day.</em><br>Better athletes.</h1>
+    <p class="hero-desc">
+      Slide Daily delivers concise, actionable sports and wellness tips straight to your inbox — covering volleyball training, recovery, mindset, nutrition, and PE fundamentals. Written by a coach who's been in the gym.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">365</div>
+        <div class="stat-label">Tips per year</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Categories</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Subscription tiers</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="tip-label">Today's Tip Preview</div>
+    <div id="tipCategory" class="tip-category">🏐 Volleyball</div>
+    <div id="tipText" class="tip-text">"Drive your hitting elbow up before contact — not your hand. The elbow leads the swing and generates the snap."</div>
+    <div id="tipDetail" class="tip-detail">Most hitters focus on their hand speed, but the power chain actually starts at the elbow. Think of it like throwing — elbow up first, forearm whips through. Practice shadow swings with a slow motion record to check your arm path.</div>
+    <div class="tip-nav">
+      <button class="tip-btn active" onclick="showTip(0)">Volleyball</button>
+      <button class="tip-btn" onclick="showTip(1)">Recovery</button>
+      <button class="tip-btn" onclick="showTip(2)">Mindset</button>
+      <button class="tip-btn" onclick="showTip(3)">Nutrition</button>
+    </div>
+    <div class="tip-counter" id="tipCounter">Tip 1 of 4 previews · 361 more in the full subscription</div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section id="categories">
+  <div class="section-label">What You'll Get</div>
+  <div class="section-title">Five Categories.<br>Zero Fluff.</div>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <span class="cat-icon">🏐</span>
+      <h4>Volleyball</h4>
+      <p>Serving mechanics, passing footwork, setting hand position, blocking timing, attack angles.</p>
+      <div class="cat-count">~90 tips/year</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">🧘</span>
+      <h4>Recovery</h4>
+      <p>Sleep protocols, foam rolling routines, active rest days, injury prevention, soreness management.</p>
+      <div class="cat-count">~70 tips/year</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">🧠</span>
+      <h4>Mindset</h4>
+      <p>Pre-game nerves, focus under pressure, processing errors, resilience, team communication.</p>
+      <div class="cat-count">~70 tips/year</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">🥗</span>
+      <h4>Nutrition</h4>
+      <p>Pre-practice fueling, hydration timing, post-game recovery meals, energy for back-to-back days.</p>
+      <div class="cat-count">~65 tips/year</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-icon">🏃</span>
+      <h4>PE & Fitness</h4>
+      <p>Bodyweight drills, gym class fundamentals, speed & agility, flexibility, general athletic development.</p>
+      <div class="cat-count">~65 tips/year</div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE TIPS -->
+<section id="samples">
+  <div class="tips-header">
+    <div class="section-label">Sample Tips</div>
+    <div class="section-title">A taste of what's inside</div>
+    <p class="section-sub">Here are 9 of the 365 tips subscribers get. Every tip includes a headline, the core insight, and a practical action step.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="sample-tip">
+      <div class="tip-day">Day 4</div>
+      <div class="tip-cat-tag tag-vb">🏐 Volleyball</div>
+      <h4>"Your serve toss is your most repeatable skill — or your least."</h4>
+      <p>Practice your toss without hitting. Drop it straight down, no spin. If it lands in the same spot 9 out of 10 times, your serve will be consistent. If not, work the toss first.</p>
+    </div>
+    <div class="sample-tip">
+      <div class="tip-day">Day 9</div>
+      <div class="tip-cat-tag tag-recovery">🧘 Recovery</div>
+      <h4>"Sleep 8 hours and you're doing more for your jump than any drill."</h4>
+      <p>Growth hormone — the main driver of muscle repair and explosive development — peaks during deep sleep. Cutting sleep to train more is a losing trade. Protect your 8 hours like a starting spot.</p>
+    </div>
+    <div class="sample-tip">
+      <div class="tip-day">Day 14</div>
+      <div class="tip-cat-tag tag-mental">🧠 Mindset</div>
+      <h4>"Reset rituals are more useful than positive thinking."</h4>
+      <p>After a bad play, elite athletes use a physical reset cue — bouncing the ball, adjusting a wristband, deep breath. It signals to the brain: that point is over, this one starts now.</p>
+    </div>
+    <div class="sample-tip">
+      <div class="tip-day">Day 21</div>
+      <div class="tip-cat-tag tag-nutrition">🥗 Nutrition</div>
+      <h4>"Eat something real 2–3 hours before practice. Not a bar."</h4>
+      <p>Energy bars are for emergencies. A real pre-practice meal — rice, pasta, potato, with some protein — gives you glycogen to sustain a 2-hour practice. A bar gives you 30 minutes.</p>
+    </div>
+    <div class="sample-tip">
+      <div class="tip-day">Day 28</div>
+      <div class="tip-cat-tag tag-vb">🏐 Volleyball</div>
+      <h4>"Platform angle beats platform height every time."</h4>
+      <p>Most passers instinctively raise their platform to chase the ball. Instead, get your feet there first and angle your platform toward target. Height is less important than direction.</p>
+    </div>
+    <div class="sample-tip">
+      <div class="tip-day">Day 35</div>
+      <div class="tip-cat-tag tag-recovery">🧘 Recovery</div>
+      <h4>"Ice is for acute injury. Not soreness."</h4>
+      <p>Icing sore muscles after a tough practice constricts blood flow and slows the repair process. For general soreness, gentle movement, heat, or contrast showers work better. Save ice for sprains.</p>
+    </div>
+    <div class="sample-tip">
+      <div class="tip-day">Day 42</div>
+      <div class="tip-cat-tag tag-mental">🧠 Mindset</div>
+      <h4>"Don't give effort a personality. Just give it."</h4>
+      <p>Athletes often think hustling for a ball is "showing off" or that staying calm is "not caring." Strip the personality from it. Hustle is a decision, not a trait. Make the decision, every play.</p>
+    </div>
+    <div class="sample-tip">
+      <div class="tip-day">Day 50</div>
+      <div class="tip-cat-tag tag-wellness">🏃 Fitness</div>
+      <h4>"Lateral speed is trained, not inherited."</h4>
+      <p>Side shuffle ladder drills 3× per week for 6 weeks will measurably improve your first-step quickness on defense. It's one of the most coachable athletic qualities — most players just skip it.</p>
+    </div>
+    <div class="sample-tip">
+      <div class="tip-day">Day 58</div>
+      <div class="tip-cat-tag tag-nutrition">🥗 Nutrition</div>
+      <h4>"Dehydration hits performance before you feel thirsty."</h4>
+      <p>By the time you feel thirst, you're already 1–2% dehydrated — enough to reduce reaction time and coordination. Drink 16–20oz in the 2 hours before practice, not in the locker room on the way out.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TIERS -->
+<section id="tiers">
+  <div class="section-label">Choose Your Plan</div>
+  <div class="section-title">Three Tiers.<br>One Mission.</div>
+  <p class="section-sub">Start with Daily and upgrade anytime. All plans run through Gumroad — cancel anytime, no contracts.</p>
+  <div class="tiers-grid">
+
+    <div class="tier-card">
+      <div class="tier-name">Tier 01</div>
+      <h3>Daily Drop</h3>
+      <div class="tier-desc">One tip, every morning. Simple.</div>
+      <div class="tier-price"><sup>$</sup>5</div>
+      <div class="tier-period">/ month · billed monthly</div>
+      <ul class="tier-features">
+        <li>1 tip delivered to your inbox daily</li>
+        <li>All 5 categories in rotation</li>
+        <li>Short format: headline + 2–3 sentences</li>
+        <li>Monday–Sunday, no days off</li>
+        <li>Cancel anytime via Gumroad</li>
+      </ul>
+      <a href="https://gumroad.com" target="_blank" class="tier-btn tier-btn-outline">Start Daily — $5/mo</a>
+    </div>
+
+    <div class="tier-card featured">
+      <div class="tier-name">Tier 02</div>
+      <h3>Weekly Digest</h3>
+      <div class="tier-desc">Every Sunday, 7 tips at once.</div>
+      <div class="tier-price"><sup>$</sup>9</div>
+      <div class="tier-period">/ month · billed monthly</div>
+      <ul class="tier-features">
+        <li>7 tips delivered every Sunday</li>
+        <li>Longer format with action steps</li>
+        <li>Weekly theme (e.g. "Serving Week")</li>
+        <li>Bonus coach note each week</li>
+        <li>Access to tip archive (last 4 weeks)</li>
+        <li>Cancel anytime via Gumroad</li>
+      </ul>
+      <a href="https://gumroad.com" target="_blank" class="tier-btn tier-btn-filled">Start Weekly — $9/mo</a>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-name">Tier 03</div>
+      <h3>Monthly PDF</h3>
+      <div class="tier-desc">Printed or saved. All 30 tips, designed.</div>
+      <div class="tier-price"><sup>$</sup>15</div>
+      <div class="tier-period">/ month · billed monthly</div>
+      <ul class="tier-features">
+        <li>Beautifully designed PDF each month</li>
+        <li>All 30 tips for the month, formatted</li>
+        <li>Printable for locker rooms or gyms</li>
+        <li>Bonus drill diagram each month</li>
+        <li>Coaches use this for team bulletins</li>
+        <li>Cancel anytime via Gumroad</li>
+      </ul>
+      <a href="https://gumroad.com" target="_blank" class="tier-btn tier-btn-outline">Start PDF — $15/mo</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- SETUP GUIDE -->
+<section id="setup">
+  <div class="section-label">Launch Checklist</div>
+  <div class="section-title">How to Set This<br>Up on Gumroad</div>
+  <p class="section-sub">Gumroad memberships are free to set up. They handle billing, delivery, and payment. You just write the tips.</p>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>Create Gumroad Account</h4>
+      <p>Go to gumroad.com, sign up free. Set your payout to direct deposit. No monthly fee — Gumroad takes 10% of each sale.</p>
+      <span class="step-tag">gumroad.com · free</span>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>Create 3 Membership Products</h4>
+      <p>One product per tier. Set as "membership" type. Name them: Slide Daily ($5), Slide Weekly ($9), Slide PDF ($15). Add a cover image using Canva.</p>
+      <span class="step-tag">~30 min setup</span>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>Write 30 Tips in Advance</h4>
+      <p>Batch-write one month of tips before launch. Use the 5 categories as your rotation. 30 tips × 2–3 sentences = about 2 hours of writing.</p>
+      <span class="step-tag">do this first</span>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h4>Use Gumroad Posts to Deliver</h4>
+      <p>Gumroad's "Posts" feature emails all members automatically. Write each tip as a post, schedule it, done. Tier 3 PDF: export from Canva monthly.</p>
+      <span class="step-tag">built-in tool</span>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE TABLE -->
+<section id="revenue">
+  <div class="section-label">Revenue Potential</div>
+  <div class="section-title">What This Can Make You</div>
+  <p class="section-sub">Even a small subscriber base creates real recurring income. These projections account for Gumroad's 10% fee.</p>
+  <table class="rev-table">
+    <thead>
+      <tr>
+        <th>Subscribers per tier</th>
+        <th>Daily ($5/mo)</th>
+        <th>Weekly ($9/mo)</th>
+        <th>PDF ($15/mo)</th>
+        <th>Monthly Total (net)</th>
+        <th>Annual (net)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="mono">10 per tier</td>
+        <td>$45</td>
+        <td>$81</td>
+        <td>$135</td>
+        <td class="green-text">$261/mo</td>
+        <td class="green-text">$3,132</td>
+      </tr>
+      <tr class="highlight-row">
+        <td class="mono">25 per tier</td>
+        <td>$112</td>
+        <td>$202</td>
+        <td>$337</td>
+        <td class="green-text">$651/mo</td>
+        <td class="green-text">$7,812</td>
+      </tr>
+      <tr>
+        <td class="mono">50 per tier</td>
+        <td>$225</td>
+        <td>$405</td>
+        <td>$675</td>
+        <td class="green-text">$1,305/mo</td>
+        <td class="green-text">$15,660</td>
+      </tr>
+      <tr>
+        <td class="mono">100 per tier</td>
+        <td>$450</td>
+        <td>$810</td>
+        <td>$1,350</td>
+        <td class="green-text">$2,610/mo</td>
+        <td class="green-text">$31,320</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">SLIDE <em>DAILY</em></div>
+  <p>Sports & Wellness Tips · Built by a Coach · Powered by Gumroad</p>
+  <p style="color:rgba(247,243,236,0.15)">© 2026 Slide</p>
+</footer>
+
+<script>
+  const tips = [
+    {
+      category: '🏐 Volleyball',
+      tagClass: 'tag-vb',
+      text: '"Drive your hitting elbow up before contact — not your hand. The elbow leads the swing and generates the snap."',
+      detail: 'Most hitters focus on their hand speed, but the power chain actually starts at the elbow. Think of it like throwing — elbow up first, forearm whips through. Practice shadow swings in slow motion to check your arm path.'
+    },
+    {
+      category: '🧘 Recovery',
+      tagClass: 'tag-recovery',
+      text: '"Your muscles don\'t grow during practice. They grow during the 48 hours after it."',
+      detail: 'Training creates the stimulus. Sleep and nutrition deliver the result. Skipping recovery to train more is borrowing from tomorrow\'s performance to pay for today\'s — with interest.'
+    },
+    {
+      category: '🧠 Mindset',
+      tagClass: 'tag-mental',
+      text: '"Nervousness and excitement feel identical in your body. Choose the label."',
+      detail: 'Pre-game anxiety and pre-game excitement have the same physiological signature — elevated heart rate, heightened senses, adrenaline. Elite athletes learn to name the feeling as readiness, not fear.'
+    },
+    {
+      category: '🥗 Nutrition',
+      tagClass: 'tag-nutrition',
+      text: '"Carbs are not the enemy. They are the fuel. Especially for a 2-hour practice."',
+      detail: 'High school athletes in-season need 50–60% of calories from carbohydrates. Restricting carbs to "eat healthier" during a season actively undermines athletic performance. Rice, pasta, fruit, bread — these are your fuel sources.'
+    }
+  ];
+
+  function showTip(i) {
+    const t = tips[i];
+    document.getElementById('tipCategory').textContent = t.category;
+    document.getElementById('tipCategory').className = 'tip-category ' + t.tagClass;
+    document.getElementById('tipText').textContent = t.text;
+    document.getElementById('tipDetail').textContent = t.detail;
+    document.getElementById('tipCounter').textContent = `Tip ${i+1} of 4 previews · 361 more in the full subscription`;
+    document.querySelectorAll('.tip-btn').forEach((b,j) => b.classList.toggle('active', i===j));
+  }
+</script>
+
+</body>
+</html>
+
 ---
 
 import { ProjectStructure } from '~/scenes/get-started/start-developing/ProjectStructure';
@@ -16,6 +791,7 @@ import { Step } from '~/ui/components/Step';
 To start the development server, run the following command:
 
 <Terminal cmd={['$ npx expo start']} />
+
 
 </Step>
 
@@ -94,3 +870,98 @@ Below, you can get familiar with the default project's file structure:
 The default project template has the following features:
 
 <TemplateFeatures />
+---
+modificationDate: February 26, 2026
+title: Start developing
+description: Make your first change to an Expo project and see it live on your device.
+---
+
+<AgentInstructions>
+
+## Submitting Feedback
+
+If this page contains errors, outdated information, or gaps that blocked you from completing a task, report it so the docs can be improved:
+
+curl -X POST https://api.expo.dev/v2/feedback/docs-send -H 'Content-Type: application/json' -d '{"url":"/get-started/start-developing/","feedback":"🤖 Agent feedback: <specific, actionable description>"}'
+
+Only submit when you have something specific and actionable to report.
+
+</AgentInstructions>
+
+# Start developing
+
+Make your first change to an Expo project and see it live on your device.
+
+> For the complete documentation index, see [llms.txt](/llms.txt). Use this file to discover all available pages.
+
+## Start a development server
+
+To start the development server, run the following command:
+
+```sh
+npx expo start
+```
+
+## Open the app on your device
+
+After running the command above, you will see a QR code in your terminal. Scan this QR code to open the app on your device.
+
+If you're using an Android Emulator or iOS Simulator, you can press a or i respectively to open the app.
+
+Having problems?
+
+Make sure you are on the same Wi-Fi network on your computer and your device.
+
+If it still doesn't work, it may be due to the router configuration — this is common for public networks. You can work around this by choosing the **Tunnel** connection type when starting the development server, then scanning the QR code again.
+
+```sh
+npx expo start --tunnel
+```
+
+> Using the **Tunnel** connection type will make the app reloads considerably slower than on **LAN** or **Local**, so it's best to avoid tunnel when possible. You may want to install and use an emulator or simulator to speed up development if **Tunnel** is required to access your machine from another device on your network.
+
+## Make your first change
+
+Open the **src/app/index.tsx** file in your code editor and make a change.
+
+```diff
+- Welcome to Expo
++ Hello World!
+```
+
+Changes not showing up on your device?
+
+Expo Go is configured by default to automatically reload the app whenever a file is changed, but let's make sure to go over the steps to enable it in case somehow things aren't working.
+
+-   Make sure you have the [development mode enabled in Expo CLI](/workflow/development-mode#development-mode).
+    
+-   Close the Expo app and reopen it.
+    
+-   Once the app is open again, shake your device to reveal the developer menu. Press Cmd ⌘ + D.
+    
+-   If you see **Fast Refresh** enabled, toggle it. If you see **Disable Fast Refresh**, dismiss the developer menu. Now try making another change.
+    
+
+## File structure
+
+Below, you can get familiar with the default project's file structure:
+
+Files
+
+### app
+
+Contains the app's navigation, which is file-based. The file structure of the **src/app** directory determines the app's navigation.
+
+The app has two routes defined by two files: **src/app/index.tsx** and **src/app/explore.tsx**. The layout file in **src/app/_layout.tsx** sets up the tab navigator using the platform-specific **AppTabs** component.
+
+## Features
+
+The default project template has the following features:
+
+Default project
+
+### File-based routing
+
+The app has two screens: **src/app/index.tsx** and **src/app/explore.tsx**. The layout file in **src/app/_layout.tsx** sets up navigation using a platform-specific **AppTabs** component that uses native tabs on Android and iOS, and Expo Router UI tabs on web.
+
+
